@@ -1,0 +1,24 @@
+{
+  "name": "decentralized-raffle",
+  "version": "1.0.0",
+  "description": "Every week the blockchain league gathers to watch a little knowledge pill given by our own members. The members are chosen using this application developed by ourselves",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/liga-de-blockchain/decentralized-raffle.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/liga-de-blockchain/decentralized-raffle/issues"
+  },
+  "homepage": "https://github.com/liga-de-blockchain/decentralized-raffle#readme",
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^3.0.0",
+    "hardhat": "^2.17.1"
+  }
+}
