@@ -1,30 +1,71 @@
-import { loadFixture } from "@nomicfoundation/hardhat-toolbox/network-helpers";
 import { expect } from "chai";
 import { ethers } from "hardhat";
+import { RaffleContract, VRFCoordinatorV2Mock } from "../typechain-types";
+import { ContractTransactionReceipt, ContractTransactionResponse, TransactionReceipt, TransactionResponse, EventFilter } from "ethers";
+import { extendProvider } from "hardhat/config";
 
 const students = ["João", "Ana", "Vivi"];
 
-describe("Raffle", function() {
-    async function deployRaffleStudentsFixture() {
-        const [owner] = await ethers.getSigners();
+describe("Raffle Contract", function() {
 
-        const Raffle = await ethers.getContractFactory("RaffleContract"); 
-        const raffle = await Raffle.deploy(students);
+    let contractOwner: any;
+    let raffleInstance: RaffleContract, vrfCoordinatorMockInstance: VRFCoordinatorV2Mock;
 
-        return raffle;
-    }
+    this.beforeEach(async () => {
+        [contractOwner] = await ethers.getSigners();
+        let vrfCoordinatorMock = await ethers.getContractFactory("VRFCoordinatorV2Mock");
+        let raffle = await ethers.getContractFactory("RaffleContract");
 
+        vrfCoordinatorMockInstance = await vrfCoordinatorMock.deploy(0,0);
+        await vrfCoordinatorMockInstance.createSubscription();
+        await vrfCoordinatorMockInstance.fundSubscription(1, ethers.parseEther("7"));
+        raffleInstance = await raffle.deploy(await vrfCoordinatorMockInstance.getAddress(), 1, students);
+        await vrfCoordinatorMockInstance.addConsumer(1, await raffleInstance.getAddress());
+    })
 
-describe("Raffle Students", function () {
-    it("should return the raffled students", async function() {
-        const raffle = await loadFixture(deployRaffleStudentsFixture);
-        expect(await raffle.raffleStudents(3)).to.eql(students);
+   it("My contract request randomness successfully", async () => {
+    await expect(raffleInstance.requestRandomWords(2)).to.emit(
+        raffleInstance,
+        "RequestSent"
+    );
+   });
+
+   it("My coordinator should request randomness successfuly", async () => {
+    await expect(raffleInstance.requestRandomWords(2)).to.emit(
+        vrfCoordinatorMockInstance,
+        "RandomWordsRequested"
+    );
+   });
+
+   it("Should fulfill randomness request", async () => {
+    var requestId : number = 0;
+
+        raffleInstance.on(raffleInstance.getEvent("RequestSent"), (_requestId, _) => {
+            requestId = parseInt(_requestId.toString());
+        });
+        // vrfCoordinatorMockInstance.on(vrfCoordinatorMockInstance.getEvent("RandomWordsRequested"), async (_)  => {
+        //     console.log("request in coordinator");
+        // })
+        // vrfCoordinatorMockInstance.on(vrfCoordinatorMockInstance.getEvent("RandomWordsFulfilled"), async (_)  => {
+        //     console.log("request fulfilled in coordinator");
+        // })
+        // raffleInstance.on(vrfCoordinatorMockInstance.getEvent("RandomWordsFulfilled"), async (_)  => {
+        //     console.log("request fulfilled");
+        // })
+        // raffleInstance.on(raffleInstance.getEvent("RaffleDone"), async (_)  => {
+        //     console.log("sdajfhjdks");
+        // })
+
+        let transaction: TransactionResponse = await raffleInstance.requestRandomWords(2);
+        await transaction.wait();   
+        let tx : TransactionResponse = await vrfCoordinatorMockInstance.fulfillRandomWords(1, await raffleInstance.getAddress());
+        await tx.wait();
+        expect(await raffleInstance.raffleStudents()).to.emit(
+                    raffleInstance,
+                    "RaffleDone"
+                ).withArgs(["Vivi", "João"]);
     });
 
-    it("Should return all the existing students", async () => {
-        const raffle = await loadFixture(deployRaffleStudentsFixture);
-        expect(await raffle.getExistingStudents()).to.eql(students);
-    })
-});
+
 
 });

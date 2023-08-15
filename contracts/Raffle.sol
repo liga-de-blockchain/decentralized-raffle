@@ -2,14 +2,16 @@
 pragma solidity ^0.8.9;
 
 import "@chainlink/contracts/src/v0.8/VRFConsumerBaseV2.sol";
-import "@chainlink/contracts/src/v0.8/interfaces/VRFCoordinatorV2Interface.sol";
+// import "@chainlink/contracts/src/v0.8/interfaces/VRFCoordinatorV2Interface.sol";
+import "@chainlink/contracts/src/v0.8/mocks/VRFCoordinatorV2Mock.sol";
+import "hardhat/console.sol";
 
 
 contract RaffleContract is  VRFConsumerBaseV2 {
 
     event RequestSent(uint256 requestId, uint32 numWords);
     event RequestFulfilled(uint requestId, uint256[] randomWords);
-    event RaffleDone(address indexed sender);
+    event RaffleDone(address indexed sender, string[2] students);
 
     struct RequestStatus {
         bool fulfilled;
@@ -18,7 +20,7 @@ contract RaffleContract is  VRFConsumerBaseV2 {
     }
 
     mapping(uint256 => RequestStatus) public reqIdToReqStatus;
-    VRFCoordinatorV2Interface COORDINATOR;
+    VRFCoordinatorV2Mock COORDINATOR;
 
     uint64 subscriptionId; //the subscription id needs to be in the chainlink VRF subscription page
     bytes32 keyHash; //used to define the max LINK gas to pay for each randomness request
@@ -36,37 +38,37 @@ contract RaffleContract is  VRFConsumerBaseV2 {
     constructor(address _vrfCoordinatorAddress, uint64 _subscriptionId, string[] memory _students)
     VRFConsumerBaseV2(_vrfCoordinatorAddress)
      {
-        COORDINATOR = VRFCoordinatorV2Interface(_vrfCoordinatorAddress);
+        COORDINATOR = VRFCoordinatorV2Mock(_vrfCoordinatorAddress);
         students = _students;
         subscriptionId = _subscriptionId;
      } 
 
-    function raffleStudents(uint8 _numberOfStudents) external returns(string memory firstStudent, string memory seconStudent) {
-        require(_numberOfStudents >= students.length, "More students asked than existing in list");
+    function raffleStudents() external {
         RequestStatus memory lastReq = reqIdToReqStatus[latestRequestId];
         uint16 firstStudentIndex  = uint16(lastReq.randomWords[0]%students.length);
         uint16 secondStudentIndex = uint16(lastReq.randomWords[1]%students.length); 
+        string[2] memory raffledStudents = [students[firstStudentIndex], students[secondStudentIndex]];
 
-        emit RaffleDone(msg.sender);
-        return (students[firstStudentIndex], students[secondStudentIndex]);
+        emit RaffleDone(msg.sender, raffledStudents);
     }
 
     function getExistingStudents() public view returns(string[] memory) {
         return students;
     }
 
-    function requestRandomWords()
+    function requestRandomWords(uint32 _numWords)
         external 
         returns (uint256 requestId) 
     {
-        requestId = COORDINATOR.requestRandomWords(keyHash, subscriptionId, requestConfirmations, callbackGasLimit, numWords);
+        requestId = COORDINATOR.requestRandomWords(keyHash, subscriptionId, requestConfirmations, callbackGasLimit, _numWords);
         reqIdToReqStatus[requestId] = RequestStatus({
             randomWords: new uint256[](0),
             exists: true,
             fulfilled: false
         });
         latestRequestId = requestId;
-        emit RequestSent(requestId, numWords);
+        emit RequestSent(requestId, _numWords);
+        return requestId;
     }
 
     function fulfillRandomWords(uint256 _requestId, uint256[] memory _randomWords) internal override {

@@ -14,19 +14,46 @@ import * as Contracts from ".";
 declare module "hardhat/types/runtime" {
   interface HardhatEthersHelpers extends HardhatEthersHelpersBase {
     getContractFactory(
-      name: "Lock",
+      name: "LinkTokenInterface",
       signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.Lock__factory>;
+    ): Promise<Contracts.LinkTokenInterface__factory>;
+    getContractFactory(
+      name: "VRFCoordinatorV2Interface",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.VRFCoordinatorV2Interface__factory>;
+    getContractFactory(
+      name: "VRFCoordinatorV2Mock",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.VRFCoordinatorV2Mock__factory>;
+    getContractFactory(
+      name: "VRFConsumerBaseV2",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.VRFConsumerBaseV2__factory>;
     getContractFactory(
       name: "RaffleContract",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.RaffleContract__factory>;
 
     getContractAt(
-      name: "Lock",
+      name: "LinkTokenInterface",
       address: string | ethers.Addressable,
       signer?: ethers.Signer
-    ): Promise<Contracts.Lock>;
+    ): Promise<Contracts.LinkTokenInterface>;
+    getContractAt(
+      name: "VRFCoordinatorV2Interface",
+      address: string | ethers.Addressable,
+      signer?: ethers.Signer
+    ): Promise<Contracts.VRFCoordinatorV2Interface>;
+    getContractAt(
+      name: "VRFCoordinatorV2Mock",
+      address: string | ethers.Addressable,
+      signer?: ethers.Signer
+    ): Promise<Contracts.VRFCoordinatorV2Mock>;
+    getContractAt(
+      name: "VRFConsumerBaseV2",
+      address: string | ethers.Addressable,
+      signer?: ethers.Signer
+    ): Promise<Contracts.VRFConsumerBaseV2>;
     getContractAt(
       name: "RaffleContract",
       address: string | ethers.Addressable,
@@ -34,19 +61,46 @@ declare module "hardhat/types/runtime" {
     ): Promise<Contracts.RaffleContract>;
 
     deployContract(
-      name: "Lock",
+      name: "LinkTokenInterface",
       signerOrOptions?: ethers.Signer | DeployContractOptions
-    ): Promise<Contracts.Lock>;
+    ): Promise<Contracts.LinkTokenInterface>;
+    deployContract(
+      name: "VRFCoordinatorV2Interface",
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.VRFCoordinatorV2Interface>;
+    deployContract(
+      name: "VRFCoordinatorV2Mock",
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.VRFCoordinatorV2Mock>;
+    deployContract(
+      name: "VRFConsumerBaseV2",
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.VRFConsumerBaseV2>;
     deployContract(
       name: "RaffleContract",
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.RaffleContract>;
 
     deployContract(
-      name: "Lock",
+      name: "LinkTokenInterface",
       args: any[],
       signerOrOptions?: ethers.Signer | DeployContractOptions
-    ): Promise<Contracts.Lock>;
+    ): Promise<Contracts.LinkTokenInterface>;
+    deployContract(
+      name: "VRFCoordinatorV2Interface",
+      args: any[],
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.VRFCoordinatorV2Interface>;
+    deployContract(
+      name: "VRFCoordinatorV2Mock",
+      args: any[],
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.VRFCoordinatorV2Mock>;
+    deployContract(
+      name: "VRFConsumerBaseV2",
+      args: any[],
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.VRFConsumerBaseV2>;
     deployContract(
       name: "RaffleContract",
       args: any[],
