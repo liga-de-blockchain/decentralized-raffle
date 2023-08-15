@@ -21,7 +21,7 @@ describe("Raffle Contract", function() {
         await vrfCoordinatorMockInstance.fundSubscription(1, ethers.parseEther("7"));
         raffleInstance = await raffle.deploy(await vrfCoordinatorMockInstance.getAddress(), 1, students);
         await vrfCoordinatorMockInstance.addConsumer(1, await raffleInstance.getAddress());
-    })
+    });
 
    it("My contract request randomness successfully", async () => {
     await expect(raffleInstance.requestRandomWords(2)).to.emit(
@@ -43,18 +43,6 @@ describe("Raffle Contract", function() {
         raffleInstance.on(raffleInstance.getEvent("RequestSent"), (_requestId, _) => {
             requestId = parseInt(_requestId.toString());
         });
-        // vrfCoordinatorMockInstance.on(vrfCoordinatorMockInstance.getEvent("RandomWordsRequested"), async (_)  => {
-        //     console.log("request in coordinator");
-        // })
-        // vrfCoordinatorMockInstance.on(vrfCoordinatorMockInstance.getEvent("RandomWordsFulfilled"), async (_)  => {
-        //     console.log("request fulfilled in coordinator");
-        // })
-        // raffleInstance.on(vrfCoordinatorMockInstance.getEvent("RandomWordsFulfilled"), async (_)  => {
-        //     console.log("request fulfilled");
-        // })
-        // raffleInstance.on(raffleInstance.getEvent("RaffleDone"), async (_)  => {
-        //     console.log("sdajfhjdks");
-        // })
 
         let transaction: TransactionResponse = await raffleInstance.requestRandomWords(2);
         await transaction.wait();   
