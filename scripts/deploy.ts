@@ -1,8 +1,10 @@
 import { ethers } from "hardhat";
+import { RaffleContract } from "../typechain-types";
 
 async function main() {
 
 
+  let raffleInstance: RaffleContract;
   const raffler = await ethers.deployContract("RaffleContract", ["0x8103B0A8A00be2DDC778e6e7eaa21791Cd364625", 
     "2828", ["João", "Nasser", "Testa", "Gi", "Dias"]]);
 

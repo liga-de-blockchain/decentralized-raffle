@@ -23,7 +23,7 @@ contract RaffleContract is  VRFConsumerBaseV2 {
     VRFCoordinatorV2Interface COORDINATOR;
 
     uint64 subscriptionId; //the subscription id needs to be in the chainlink VRF subscription page
-    bytes32 keyHash; //used to define the max LINK gas to pay for each randomness request
+    bytes32 keyHash = 0x474e34a077df58807dbe9c96d3c009b23b3c6d0cce433e59bbf5b34f823bc56c; //used to define the max LINK gas to pay for each randomness request
     uint256 fee;
 
     uint256 public latestRequestId; //this make it easy for you to check the latest erquest without the need to store this offchain
