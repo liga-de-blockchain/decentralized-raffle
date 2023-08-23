@@ -2,8 +2,8 @@
 pragma solidity ^0.8.9;
 
 import "@chainlink/contracts/src/v0.8/VRFConsumerBaseV2.sol";
-// import "@chainlink/contracts/src/v0.8/interfaces/VRFCoordinatorV2Interface.sol";
-import "@chainlink/contracts/src/v0.8/mocks/VRFCoordinatorV2Mock.sol";
+import "@chainlink/contracts/src/v0.8/interfaces/VRFCoordinatorV2Interface.sol";
+// import "@chainlink/contracts/src/v0.8/mocks/VRFCoordinatorV2Mock.sol";
 import "hardhat/console.sol";
 
 
@@ -20,7 +20,7 @@ contract RaffleContract is  VRFConsumerBaseV2 {
     }
 
     mapping(uint256 => RequestStatus) public reqIdToReqStatus;
-    VRFCoordinatorV2Mock COORDINATOR;
+    VRFCoordinatorV2Interface COORDINATOR;
 
     uint64 subscriptionId; //the subscription id needs to be in the chainlink VRF subscription page
     bytes32 keyHash; //used to define the max LINK gas to pay for each randomness request
@@ -38,7 +38,7 @@ contract RaffleContract is  VRFConsumerBaseV2 {
     constructor(address _vrfCoordinatorAddress, uint64 _subscriptionId, string[] memory _students)
     VRFConsumerBaseV2(_vrfCoordinatorAddress)
      {
-        COORDINATOR = VRFCoordinatorV2Mock(_vrfCoordinatorAddress);
+        COORDINATOR = VRFCoordinatorV2Interface(_vrfCoordinatorAddress);
         students = _students;
         subscriptionId = _subscriptionId;
      } 

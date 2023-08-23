@@ -1,21 +1,15 @@
 import { ethers } from "hardhat";
 
 async function main() {
-  const currentTimestampInSeconds = Math.round(Date.now() / 1000);
-  const unlockTime = currentTimestampInSeconds + 60;
 
-  const lockedAmount = ethers.parseEther("0.001");
 
-  const lock = await ethers.deployContract("Lock", [unlockTime], {
-    value: lockedAmount,
-  });
+  const raffler = await ethers.deployContract("RaffleContract", ["0x8103B0A8A00be2DDC778e6e7eaa21791Cd364625", 
+    "2828", ["João", "Nasser", "Testa", "Gi", "Dias"]]);
 
-  await lock.waitForDeployment();
+  await raffler.waitForDeployment();
 
   console.log(
-    `Lock with ${ethers.formatEther(
-      lockedAmount
-    )}ETH and unlock timestamp ${unlockTime} deployed to ${lock.target}`
+    `deployed in ${await raffler.getAddress()}`
   );
 }
 

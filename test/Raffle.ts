@@ -1,8 +1,6 @@
 import { expect } from "chai";
 import { ethers } from "hardhat";
 import { RaffleContract, VRFCoordinatorV2Mock } from "../typechain-types";
-import { ContractTransactionReceipt, ContractTransactionResponse, TransactionReceipt, TransactionResponse, EventFilter } from "ethers";
-import { extendProvider } from "hardhat/config";
 
 const students = ["João", "Ana", "Vivi"];
 
@@ -13,6 +11,7 @@ describe("Raffle Contract", function() {
 
     this.beforeEach(async () => {
         [contractOwner] = await ethers.getSigners();
+        
         let vrfCoordinatorMock = await ethers.getContractFactory("VRFCoordinatorV2Mock");
         let raffle = await ethers.getContractFactory("RaffleContract");
 
@@ -21,6 +20,7 @@ describe("Raffle Contract", function() {
         await vrfCoordinatorMockInstance.fundSubscription(1, ethers.parseEther("7"));
         raffleInstance = await raffle.deploy(await vrfCoordinatorMockInstance.getAddress(), 1, students);
         await vrfCoordinatorMockInstance.addConsumer(1, await raffleInstance.getAddress());
+        console.log(await raffleInstance.getAddress())
     });
 
    it("My contract request randomness successfully", async () => {
@@ -45,6 +45,7 @@ describe("Raffle Contract", function() {
         });
 
         let transaction: TransactionResponse = await raffleInstance.requestRandomWords(2);
+
         await transaction.wait();   
         let tx : TransactionResponse = await vrfCoordinatorMockInstance.fulfillRandomWords(1, await raffleInstance.getAddress());
         await tx.wait();
